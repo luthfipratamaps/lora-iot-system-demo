@@ -55,7 +55,7 @@ void setup() {
 }
 
 void loop() {
-
+  // Read sensor here
   sensor1 = 32.23;
   sensor2 = 76.89;
   sensor3 = 80.12;

@@ -1,6 +1,12 @@
 /* demo_gateway_1.ino
  * Pair with demo_node_1.ino
  * Last edited: 2023-02-21
+ * 
+ * Changelogs:
+ * 1.  2023-02-21
+ *   - init of this version
+ * 2.  2023-02-25
+ *   - rearrange code 
  *
  * By: Luthfi Pratama
  */
@@ -32,13 +38,11 @@ RHReliableDatagram manager(driver, GATEWAY_ADDRESS);
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
-//Network credentials
+// Network credentials
 const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASS;
 
-//Broker parameters
-char *mqttServer = MQTT_SERVER;
-int mqttPort = MQTT_PORT;
+// MQTT parameters
 
 String id = DEVICE_ID;  // Name of our device, must be unique
 String topic_publish = String(TOPIC_BASE) + "pubs/" + String(DEVICE_ID);  // Topic to publish to
@@ -47,7 +51,7 @@ String topic_subscribe = String(TOPIC_BASE) + "subs/" + String(DEVICE_ID);  // T
 String dataset;
 
 void setupMQTT(){
-  mqttClient.setServer(mqttServer, mqttPort);
+  mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
   mqttClient.setCallback(callback);
 }
 
