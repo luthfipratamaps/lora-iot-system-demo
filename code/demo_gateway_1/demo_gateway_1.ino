@@ -1,6 +1,6 @@
 /* demo_gateway_1.ino
  * Pair with demo_node_1.ino
- * Last edited: 2023-02-21
+ * Last edited: 2023-02-25
  * 
  * Changelogs:
  * 1.  2023-02-21
@@ -48,7 +48,7 @@ String topic_publish = String(TOPIC_BASE) + "pubs/" + String(DEVICE_ID);  // Top
 String topic_subscribe = String(TOPIC_BASE) + "subs/" + String(DEVICE_ID);  // Topic to subcribe to
 
 // Radio comm variables
-uint8_t data[] = "REQ_RTU13";
+uint8_t data[] = "REQ_NODE11";
 uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
 
 // Misc

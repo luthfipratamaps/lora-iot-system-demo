@@ -1,6 +1,12 @@
 /* demo_node_1.ino
  * Pair with demo_gateway_1.ino
- * Last edited: 2023-02-21
+ * Last edited: 2023-02-25
+ * 
+ * Changelogs:
+ * 1.  2023-02-21
+ *   - init of this version
+ * 2.  2023-02-25
+ *   - rearrange code 
  *
  * By: Luthfi Pratama
  */
@@ -25,10 +31,12 @@ RH_RF95 driver(RFM95_CS, RFM95_INT);
 //Class to manage message delivery and receipt, using the driver declared above
 RHReliableDatagram manager(driver, RTU_ADDRESS);
 
+// Radio comm variables
 uint8_t data[128];
 uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-String Gateway_Command = String("REQ_RTU13");
+String Gateway_Command = String("REQ_NODE11");
 
+// Misc
 float sensor1, sensor2, sensor3, sensor4;
 String dataset;
 
@@ -42,13 +50,10 @@ void setup() {
   digitalWrite(RFM95_RST, HIGH);
   
   // manual reset
-  digitalWrite(RFM95_RST, LOW);
-  delay(10);
-  digitalWrite(RFM95_RST, HIGH);
-  delay(10);
+  digitalWrite(RFM95_RST, LOW); delay(10);
+  digitalWrite(RFM95_RST, HIGH); delay(10);
   
-  if (!manager.init()) 
-    Serial.println("init failed");
+  if (!manager.init()) Serial.println("init failed");
 
   driver.setFrequency(440.0);
   driver.setTxPower(18, false);
