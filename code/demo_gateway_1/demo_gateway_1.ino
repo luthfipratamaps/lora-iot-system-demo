@@ -103,7 +103,7 @@ void setup() {
   driver.setTxPower(18, false);
 
   //MQTT setup
-  WiFi.begin(ssid, password);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
