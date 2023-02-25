@@ -26,7 +26,8 @@
 #define RFM95_INT 2
 
 #define GATEWAY_ADDRESS 10
-#define RTU_ADDRESS 11
+// #define RTU_ADDRESS 11
+int RTU_ADDRESSES[64] = {11, 12};
 
 //Creating objects
 // Singleton instance of the radio driver
@@ -46,7 +47,10 @@ String topic_publish = String(TOPIC_BASE) + "pubs/" + String(DEVICE_ID);  // Top
 String topic_subscribe = String(TOPIC_BASE) + "subs/" + String(DEVICE_ID);  // Topic to subcribe to
 
 // Radio comm variables
-uint8_t data[] = "REQ_NODE11";
+uint8_t cmd11[] = "11";
+uint8_t cmd12[] = "12";
+uint8_t* cmd[128] = {cmd11, cmd12};
+
 uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
 
 // Misc
@@ -116,23 +120,27 @@ void loop() {
   if (!mqttClient.connected()) reconnect();
   mqttClient.loop();
   
-  Serial.println("Sending to rf95_reliable_datagram_server");
-    
-  // Send a message to manager_server
-  if (manager.sendtoWait(data, sizeof(data), RTU_ADDRESS)){
-    // Now wait for a reply from the server
-    uint8_t len = sizeof(buf);
-    uint8_t from;   
-    if (manager.recvfromAckTimeout(buf, &len, 2000, &from)){
-      Serial.print("got reply from : 0x");
-      Serial.println(from, HEX);
-      dataset = (char *) buf;
-      
-      Serial.println(dataset);
-      mqttClient.publish(topic_publish.c_str(), dataset.c_str());
-    } else {
-      Serial.println("No reply, is rf95_reliable_datagram_server running?");
-    }
-  } else Serial.println("sendtoWait failed");
+  for (int i = 0; i < 2; i++){
+    Serial.println("Sending request to: " + String(RTU_ADDRESSES[i]));
+    Serial.println(String((char*) cmd[i]));
+    // Send a message to manager_server
+    if (manager.sendtoWait(cmd[i], sizeof(cmd[i]), RTU_ADDRESSES[i])){
+      // Now wait for a reply from the server
+      uint8_t len = sizeof(buf);
+      uint8_t from;   
+      if (manager.recvfromAckTimeout(buf, &len, 2000, &from)){
+        Serial.print("got reply from : 0x");
+        Serial.println(from, HEX);
+        dataset = (char *) buf;
+        
+        Serial.println(dataset);
+        mqttClient.publish(topic_publish.c_str(), dataset.c_str());
+      } else {
+        Serial.println("No reply, is Node" + String(RTU_ADDRESSES[i]) + " running?");
+      }
+    } else Serial.println("sendtoWait failed");
+
+    delay(100);
+  }
   delay(500);
 }

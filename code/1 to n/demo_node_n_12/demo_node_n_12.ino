@@ -32,7 +32,7 @@ RHReliableDatagram manager(driver, RTU_ADDRESS);
 // Radio comm variables
 uint8_t data[128];
 uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-String Gateway_Command = "REQ_NODE" + String(RTU_ADDRESS);
+String Gateway_Command = String(RTU_ADDRESS);
 
 // Misc
 float sensor1, sensor2, sensor3, sensor4;
