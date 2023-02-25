@@ -43,11 +43,15 @@ const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASS;
 
 // MQTT parameters
-
 String id = DEVICE_ID;  // Name of our device, must be unique
 String topic_publish = String(TOPIC_BASE) + "pubs/" + String(DEVICE_ID);  // Topic to publish to
 String topic_subscribe = String(TOPIC_BASE) + "subs/" + String(DEVICE_ID);  // Topic to subcribe to
 
+// Radio comm variables
+uint8_t data[] = "REQ_RTU13";
+uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+
+// Misc
 String dataset;
 
 void setupMQTT(){
@@ -91,13 +95,10 @@ void setup() {
   digitalWrite(RFM95_RST, HIGH);
   
   // manual reset
-  digitalWrite(RFM95_RST, LOW);
-  delay(10);
-  digitalWrite(RFM95_RST, HIGH);
-  delay(10);
+  digitalWrite(RFM95_RST, LOW);  delay(10);
+  digitalWrite(RFM95_RST, HIGH); delay(10);
   
-  if (!manager.init())
-    Serial.println("init failed");
+  if (!manager.init()) Serial.println("init failed");
 
   driver.setFrequency(440.0);
   driver.setTxPower(18, false);
@@ -113,41 +114,27 @@ void setup() {
   setupMQTT();
 }
 
-uint8_t data[] = "REQ_RTU13";
-// Dont put this on the stack:
-uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-
 void loop() {
-  if (!mqttClient.connected())
-  {
-    reconnect();
-  }
+  if (!mqttClient.connected()) reconnect();
   mqttClient.loop();
   
   Serial.println("Sending to rf95_reliable_datagram_server");
     
   // Send a message to manager_server
-  if (manager.sendtoWait(data, sizeof(data), RTU_ADDRESS))
-  {
+  if (manager.sendtoWait(data, sizeof(data), RTU_ADDRESS)){
     // Now wait for a reply from the server
     uint8_t len = sizeof(buf);
     uint8_t from;   
-    if (manager.recvfromAckTimeout(buf, &len, 2000, &from))
-    {
+    if (manager.recvfromAckTimeout(buf, &len, 2000, &from)){
       Serial.print("got reply from : 0x");
       Serial.println(from, HEX);
       dataset = (char *) buf;
       
       Serial.println(dataset);
       mqttClient.publish(topic_publish.c_str(), dataset.c_str());
-    }
-    else
-    {
+    } else {
       Serial.println("No reply, is rf95_reliable_datagram_server running?");
     }
-  }
-  else
-    Serial.println("sendtoWait failed");
+  } else Serial.println("sendtoWait failed");
   delay(500);
-
 }
