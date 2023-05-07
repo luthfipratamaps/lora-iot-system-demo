@@ -27,7 +27,8 @@
 
 #define GATEWAY_ADDRESS 10
 // #define RTU_ADDRESS 11
-int RTU_ADDRESSES[64] = {11, 12};
+int RTU_ADDRESSES[64] = {11, 12, 11, 12};
+int RTU_ADDRESSES_DUMMY[64] = {11, 12, 13, 14};
 
 //Creating objects
 // Singleton instance of the radio driver
@@ -49,7 +50,9 @@ String topic_subscribe = String(TOPIC_BASE) + "subs/" + String(DEVICE_ID);  // T
 // Radio comm variables
 uint8_t cmd11[] = "11";
 uint8_t cmd12[] = "12";
-uint8_t* cmd[128] = {cmd11, cmd12};
+uint8_t cmd13[] = "11";
+uint8_t cmd14[] = "12";
+uint8_t* cmd[128] = {cmd11, cmd12, cmd13, cmd14};
 
 uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
 
@@ -120,7 +123,7 @@ void loop() {
   if (!mqttClient.connected()) reconnect();
   mqttClient.loop();
   
-  for (int i = 0; i < 2; i++){
+  for (int i = 0; i < 4; i++){
     Serial.println("Sending request to: " + String(RTU_ADDRESSES[i]));
     Serial.println(String((char*) cmd[i]));
     // Send a message to manager_server
@@ -132,6 +135,7 @@ void loop() {
         Serial.print("got reply from : 0x");
         Serial.println(from, HEX);
         dataset = (char *) buf;
+        dataset =  String(RTU_ADDRESSES_DUMMY[i]) + "," + String(dataset); 
         
         Serial.println(dataset);
         mqttClient.publish(topic_publish.c_str(), dataset.c_str());
@@ -140,7 +144,7 @@ void loop() {
       }
     } else Serial.println("sendtoWait failed");
 
-    delay(100);
+    delay(500);
   }
-  delay(500);
+  delay(1000);
 }
