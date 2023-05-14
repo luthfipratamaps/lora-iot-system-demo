@@ -27,7 +27,7 @@
 
 #define GATEWAY_ADDRESS 10
 // #define RTU_ADDRESS 11
-int RTU_ADDRESSES[64] = {11, 12, 11, 12};
+int RTU_ADDRESSES[64] = {11, 11, 13, 14};
 int RTU_ADDRESSES_DUMMY[64] = {11, 12, 13, 14};
 
 //Creating objects
@@ -49,9 +49,9 @@ String topic_subscribe = String(TOPIC_BASE) + "subs/" + String(DEVICE_ID);  // T
 
 // Radio comm variables
 uint8_t cmd11[] = "11";
-uint8_t cmd12[] = "12";
-uint8_t cmd13[] = "11";
-uint8_t cmd14[] = "12";
+uint8_t cmd12[] = "11";
+uint8_t cmd13[] = "13";
+uint8_t cmd14[] = "14";
 uint8_t* cmd[128] = {cmd11, cmd12, cmd13, cmd14};
 
 uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
