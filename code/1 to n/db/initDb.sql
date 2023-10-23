@@ -1,11 +1,12 @@
 -- --------------------------------------------------------------------------------------
 -- Creating new database
+DROP DATABASE IF EXISTS loraiot;
 CREATE DATABASE loraiot;
 
 -- Creating new table
 USE loraiot;
 DROP TABLE IF EXISTS monitoring_data;
-CREATE TABLE monitoring_data (
+CREATE TABLE monitoring_data(
                 No_Data INT NOT NULL AUTO_INCREMENT,
                 Tanggal CHAR(20),
                 Waktu CHAR(10),  
@@ -29,15 +30,15 @@ CREATE TABLE monitoring_data (
                 IC3 FLOAT,
                 IC4 FLOAT,
                 IC_Mean FLOAT,
-                Latitude1 FLOAT,
-                Latitude2 FLOAT,
-                Latitude3 FLOAT,
-                Latitude4 FLOAT,
-                Longitude1 FLOAT,
-                Longitude2 FLOAT,
-                Longitude3 FLOAT,
-                Longitude4 FLOAT,
                 PRIMARY KEY (No_Data)); 
+
+DROP TABLE IF EXISTS nodes;
+CREATE TABLE nodes (
+                Node_Id INT NOT NULL,
+                Longitude FLOAT,
+                Latitude FLOAT,  
+				Is_Need_Shade BOOLEAN NOT NULL,
+                PRIMARY KEY (Node_Id)); 
 
 -- Creating mean trigger
 DELIMITER //
